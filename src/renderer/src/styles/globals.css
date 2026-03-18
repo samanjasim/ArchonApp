@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --forge-primary: #1a1510;
+    --forge-surface: #231e17;
+    --forge-elevated: #2e2720;
+    --forge-border: #3d3530;
+    --forge-accent: #d4942a;
+    --forge-accent-dim: #a06b1a;
+    --forge-text-primary: #c8bda8;
+    --forge-text-secondary: #8a7e6e;
+
+    --sidebar-width: 240px;
+    --sidebar-width-collapsed: 64px;
+    --statusbar-height: 28px;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-color: var(--forge-border);
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background-color: var(--forge-primary);
+    color: var(--forge-text-primary);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--forge-border);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--forge-text-secondary);
+  }
+}

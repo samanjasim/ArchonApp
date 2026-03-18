@@ -1,0 +1,33 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./index.html', './src/renderer/src/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        forge: {
+          primary: '#1a1510',
+          surface: '#231e17',
+          elevated: '#2e2720',
+          border: '#3d3530',
+          accent: '#d4942a',
+          'accent-dim': '#a06b1a',
+          'text-primary': '#c8bda8',
+          'text-secondary': '#8a7e6e',
+        },
+        status: {
+          completed: '#2ecc71',
+          'in-progress': '#d4942a',
+          ready: '#3498db',
+          pending: '#6b6560',
+          blocked: '#e74c3c',
+          waiting: '#e67e22',
+        },
+      },
+      fontFamily: {
+        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        mono: ['Fira Code', 'monospace'],
+      },
+    },
+  },
+  plugins: [],
+}

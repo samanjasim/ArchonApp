@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Sidebar } from './Sidebar'
 import { StatusBar } from './StatusBar'
 import { useAppStore } from '@/stores/app.store'
+import { NewProjectModal } from '@/features/projects/components/NewProjectModal'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -8,11 +10,12 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const collapsed = useAppStore((s) => s.sidebarCollapsed)
+  const [newProjectOpen, setNewProjectOpen] = useState(false)
 
   return (
     <div className="flex h-screen flex-col bg-forge-primary">
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
+        <Sidebar onCreateProject={() => setNewProjectOpen(true)} />
         <main
           className="flex-1 overflow-auto transition-all duration-200"
           style={{
@@ -23,6 +26,7 @@ export function AppShell({ children }: AppShellProps) {
         </main>
       </div>
       <StatusBar />
+      <NewProjectModal open={newProjectOpen} onClose={() => setNewProjectOpen(false)} />
     </div>
   )
 }

@@ -25,7 +25,7 @@ const eventIconColors: Record<ActivityEventType, string> = {
   stage_started: 'text-forge-accent bg-forge-accent/15',
   stage_completed: 'text-status-completed bg-status-completed/15',
   push_detected: 'text-forge-text-secondary bg-forge-elevated',
-  pr_merged: 'text-purple-400 bg-purple-400/15',
+  pr_merged: 'text-status-merged bg-status-merged/15',
   approval_given: 'text-status-completed bg-status-completed/15',
   checks_passed: 'text-status-completed bg-status-completed/15',
 }

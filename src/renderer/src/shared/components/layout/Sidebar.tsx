@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Monitor,
@@ -6,15 +5,11 @@ import {
   BookOpen,
   Settings,
   Plus,
-  ChevronRight,
-  ChevronDown,
   Flame,
   User,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
-import { StatusDot } from '@/shared/components/ui/StatusDot'
-import { mockProjects } from '@/shared/lib/mock-data'
-import type { MockProject } from '@/shared/lib/mock-data'
+import { ProjectList } from './ProjectList'
 
 const topNavItems = [
   { path: '/', label: 'Command Center', icon: Monitor },
@@ -22,7 +17,11 @@ const topNavItems = [
   { path: '/skills', label: 'Skills', icon: BookOpen },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  onCreateProject: () => void
+}
+
+export function Sidebar({ onCreateProject }: SidebarProps) {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -71,22 +70,7 @@ export function Sidebar() {
       </nav>
 
       {/* Projects Section */}
-      <div className="mt-4 flex-1 overflow-y-auto px-2">
-        <div className="flex items-center justify-between px-3 pb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-forge-text-secondary">
-            Projects
-          </span>
-          <button className="rounded p-0.5 text-forge-text-secondary transition-colors hover:bg-forge-elevated hover:text-forge-text-primary">
-            <Plus size={14} />
-          </button>
-        </div>
-
-        <div className="space-y-0.5">
-          {mockProjects.map((project) => (
-            <ProjectItem key={project.id} project={project} />
-          ))}
-        </div>
-      </div>
+      <ProjectList onCreateProject={onCreateProject} />
 
       {/* Bottom Section */}
       <div className="border-t border-forge-border">
@@ -113,54 +97,10 @@ export function Sidebar() {
           </div>
           <div className="min-w-0">
             <div className="truncate text-sm font-medium text-forge-text-primary">Commander</div>
-            <div className="text-xs text-green-500">Online</div>
+            <div className="text-xs text-forge-online">Online</div>
           </div>
         </div>
       </div>
     </aside>
-  )
-}
-
-function ProjectItem({ project }: { project: MockProject }) {
-  const [expanded, setExpanded] = useState(project.status === 'active' && project.workItems.length > 0)
-  const activeCount = project.workItems.filter(
-    (wi) => wi.status !== 'completed' && wi.status !== 'pending',
-  ).length
-
-  return (
-    <div>
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm text-forge-text-secondary transition-colors hover:bg-forge-elevated hover:text-forge-text-primary"
-      >
-        {project.workItems.length > 0 ? (
-          expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />
-        ) : (
-          <span className="w-3.5" />
-        )}
-        <span className="flex-1 truncate text-left">{project.name}</span>
-        {project.status === 'paused' ? (
-          <span className="text-xs text-forge-text-secondary">paused</span>
-        ) : activeCount > 0 ? (
-          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-forge-elevated px-1.5 text-xs text-forge-text-secondary">
-            {activeCount}
-          </span>
-        ) : null}
-      </button>
-
-      {expanded && project.workItems.length > 0 && (
-        <div className="ml-5 space-y-0.5 py-0.5">
-          {project.workItems.map((wi) => (
-            <div
-              key={wi.id}
-              className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-forge-text-secondary transition-colors hover:bg-forge-elevated hover:text-forge-text-primary"
-            >
-              <StatusDot status={wi.status} />
-              <span className="truncate">{wi.title}</span>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
   )
 }

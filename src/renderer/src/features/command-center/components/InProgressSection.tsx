@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react'
 import { StatusDot } from '@/shared/components/ui/StatusDot'
-import { getInProgressItems, formatElapsed } from '@/shared/lib/mock-data'
+import { getInProgressItems } from '@/shared/lib/mock-data'
+import { formatElapsed } from '@/shared/lib/format'
 
 export function InProgressSection() {
   const items = getInProgressItems()

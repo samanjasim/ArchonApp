@@ -1,7 +1,7 @@
 // Mock data for development — will be replaced by API calls
 
 export type Priority = 'critical' | 'high' | 'medium' | 'low'
-export type ProjectStatus = 'active' | 'paused' | 'archived'
+export type ProjectStatus = 'draft' | 'active' | 'paused' | 'archived'
 export type WorkItemStatus = 'in_progress' | 'waiting_approval' | 'ready' | 'blocked' | 'completed' | 'pending'
 export type ActivitySource = 'system' | 'github' | 'user'
 export type ActivityEventType =
@@ -15,7 +15,10 @@ export type ActivityEventType =
 export interface MockProject {
   id: string
   name: string
+  slug: string
+  description?: string
   status: ProjectStatus
+  createdAt: string
   workItems: MockWorkItem[]
 }
 
@@ -31,6 +34,7 @@ export interface MockWorkItem {
   elapsedMinutes?: number
   lastEvent?: string
   lastEventTime?: string
+  updatedAgo?: string
 }
 
 export interface MockActivity {
@@ -47,7 +51,10 @@ export const mockProjects: MockProject[] = [
   {
     id: 'p1',
     name: 'Horizon Platform',
+    slug: 'horizon-platform',
+    description: 'SaaS platform with .NET backend, React frontend, and Flutter mobile app',
     status: 'active',
+    createdAt: '2 weeks ago',
     workItems: [
       {
         id: 'wi1',
@@ -58,6 +65,7 @@ export const mockProjects: MockProject[] = [
         stageDescription: 'waiting approval',
         status: 'waiting_approval',
         priority: 'critical',
+        updatedAgo: '2h',
       },
       {
         id: 'wi2',
@@ -68,16 +76,7 @@ export const mockProjects: MockProject[] = [
         stageDescription: 'ready to start',
         status: 'ready',
         priority: 'medium',
-      },
-      {
-        id: 'wi3',
-        title: 'Cart tax fix',
-        projectId: 'p1',
-        projectName: 'Horizon Platform',
-        stageName: 'Verify',
-        stageDescription: 'needs manual testing',
-        status: 'waiting_approval',
-        priority: 'high',
+        updatedAgo: '1h',
       },
       {
         id: 'wi4',
@@ -90,13 +89,61 @@ export const mockProjects: MockProject[] = [
         priority: 'medium',
         elapsedMinutes: 42,
         lastEvent: '4 commits pushed 3 min ago',
+        updatedAgo: '42m',
+      },
+      {
+        id: 'wi3',
+        title: 'Cart tax fix',
+        projectId: 'p1',
+        projectName: 'Horizon Platform',
+        stageName: 'Verify',
+        stageDescription: 'needs manual testing',
+        status: 'waiting_approval',
+        priority: 'high',
+        updatedAgo: '3h',
+      },
+      {
+        id: 'wi6',
+        title: 'Login redesign',
+        projectId: 'p1',
+        projectName: 'Horizon Platform',
+        stageName: 'Done',
+        stageDescription: '',
+        status: 'completed',
+        priority: 'low',
+        updatedAgo: '1d',
+      },
+      {
+        id: 'wi7',
+        title: 'API documentation',
+        projectId: 'p1',
+        projectName: 'Horizon Platform',
+        stageName: 'Done',
+        stageDescription: '',
+        status: 'completed',
+        priority: 'low',
+        updatedAgo: '2d',
+      },
+      {
+        id: 'wi8',
+        title: 'Dark mode support',
+        projectId: 'p1',
+        projectName: 'Horizon Platform',
+        stageName: 'Paused',
+        stageDescription: '',
+        status: 'pending',
+        priority: 'low',
+        updatedAgo: '3d',
       },
     ],
   },
   {
     id: 'p2',
     name: 'Vortex Mobile',
+    slug: 'vortex-mobile',
+    description: 'Flutter mobile app for the Vortex ecosystem',
     status: 'active',
+    createdAt: '1 week ago',
     workItems: [
       {
         id: 'wi5',
@@ -109,13 +156,17 @@ export const mockProjects: MockProject[] = [
         priority: 'high',
         elapsedMinutes: 75,
         lastEvent: 'CI checks passed 8 min ago',
+        updatedAgo: '1h',
       },
     ],
   },
   {
     id: 'p3',
     name: 'Nebula API',
+    slug: 'nebula-api',
+    description: 'GraphQL API gateway for microservices',
     status: 'paused',
+    createdAt: '1 month ago',
     workItems: [],
   },
 ]
@@ -179,9 +230,45 @@ export function getInProgressItems(): MockWorkItem[] {
   return mockProjects.flatMap((p) => p.workItems).filter((wi) => wi.status === 'in_progress')
 }
 
-export function formatElapsed(minutes: number): string {
-  if (minutes < 60) return `${minutes} min`
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return m > 0 ? `${h}h ${m}m` : `${h}h`
+// Re-export for backwards compatibility
+export { formatElapsed } from './format'
+
+// Slug helpers
+export function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+export function isSlugTaken(slug: string): boolean {
+  return mockProjects.some((p) => p.slug === slug)
+}
+
+export function addMockProject(name: string, description?: string): MockProject {
+  const slug = generateSlug(name)
+  const project: MockProject = {
+    id: `p${Date.now()}`,
+    name,
+    slug,
+    description,
+    status: 'draft',
+    createdAt: 'just now',
+    workItems: [],
+  }
+  mockProjects.push(project)
+  return project
+}
+
+export function findProjectById(id: string): MockProject | undefined {
+  return mockProjects.find((p) => p.id === id)
+}
+
+export function getProjectStats(project: MockProject) {
+  const active = project.workItems.filter(
+    (wi) => wi.status === 'in_progress' || wi.status === 'waiting_approval' || wi.status === 'ready' || wi.status === 'blocked',
+  ).length
+  const completed = project.workItems.filter((wi) => wi.status === 'completed').length
+  const paused = project.workItems.filter((wi) => wi.status === 'pending').length
+  return { active, completed, paused, total: project.workItems.length }
 }

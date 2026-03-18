@@ -14,12 +14,12 @@ export function StatusBar() {
       style={{ height: 'var(--statusbar-height)' }}
     >
       <div className="flex items-center gap-2">
-        <span className="inline-block h-1.5 w-1.5 rounded-full bg-yellow-600" />
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-forge-accent" />
         <span>Ably: {ablyStatus === 'not_configured' ? 'Not configured' : ablyStatus}</span>
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="inline-block h-1.5 w-1.5 rounded-full bg-red-500" />
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-status-blocked" />
         <span>API: Offline</span>
       </div>
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useIpc } from '@/shared/hooks/useElectronIpc'
 import { getAblyStatus } from '@/shared/lib/ably-client'
+import { cn } from '@/shared/lib/utils'
 
 interface SystemInfo {
   version: string
@@ -45,9 +46,10 @@ export function SettingsPage() {
         {rows.map((row, i) => (
           <div
             key={row.label}
-            className={`flex items-center justify-between px-4 py-3 ${
-              i < rows.length - 1 ? 'border-b border-forge-border' : ''
-            }`}
+            className={cn(
+              'flex items-center justify-between px-4 py-3',
+              i < rows.length - 1 && 'border-b border-forge-border',
+            )}
           >
             <span className="text-sm text-forge-text-secondary">{row.label}</span>
             <span className="font-mono text-sm text-forge-text-primary">{row.value}</span>

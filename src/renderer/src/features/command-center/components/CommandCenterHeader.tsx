@@ -1,4 +1,5 @@
 import { Monitor, Search, Bell } from 'lucide-react'
+import { cn } from '@/shared/lib/utils'
 import { getAblyStatus } from '@/shared/lib/ably-client'
 
 export function CommandCenterHeader() {
@@ -16,9 +17,10 @@ export function CommandCenterHeader() {
         {/* Ably Status */}
         <div className="flex items-center gap-2 rounded-full border border-forge-border px-3 py-1">
           <span
-            className={`h-2 w-2 rounded-full ${
-              ablyStatus === 'connected' ? 'bg-green-500' : 'bg-yellow-600'
-            }`}
+            className={cn(
+              'h-2 w-2 rounded-full',
+              ablyStatus === 'connected' ? 'bg-forge-online' : 'bg-forge-accent',
+            )}
           />
           <span className="text-xs font-mono text-forge-text-secondary">
             {ablyStatus === 'connected' ? 'Ably Connected' : 'Ably Offline'}
